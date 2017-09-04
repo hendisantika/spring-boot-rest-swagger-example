@@ -1,5 +1,6 @@
 package com.hendisantika.springbootrestswaggerexample.endpoint;
 
+import com.hendisantika.springbootrestswaggerexample.endpoint.error.Error;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
