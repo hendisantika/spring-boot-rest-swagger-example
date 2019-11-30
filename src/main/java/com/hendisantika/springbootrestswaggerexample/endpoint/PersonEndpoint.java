@@ -8,7 +8,9 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,20 +48,22 @@ public class PersonEndpoint extends BaseEndpoint {
             value = "Get all persons",
             notes = "Returns first N persons specified by the size parameter with page offset specified by page parameter.",
             response = Page.class)
-    public Page<Person> getAll(Pageable pageable
-//            @ApiParam("The size of the page to be returned") @RequestParam(required = false) Integer size,
-//            @ApiParam("Zero-based page index") @RequestParam(required = false) Integer page
+    public Page<Person> getAll(
+            @ApiParam("The size of the page to be returned") @RequestParam(required = false) Integer pageSize,
+            @ApiParam("Zero-based page index") @RequestParam(required = false) Integer pageNo,
+            @ApiParam("Zero-based page sort") @RequestParam(required = false) String sortBy
     ) {
 
-//        if (size == null) {
-//            size = DEFAULT_PAGE_SIZE;
-//        }
-//        if (page == null) {
-//            page = 0;
-//        }
+        if (pageSize == null) {
+            pageSize = DEFAULT_PAGE_SIZE;
+        }
+        if (pageNo == null) {
+            pageNo = 0;
+        }
 
 //        Pageable pageable = new PageRequest(page, size, Sort.by("id"));
-        Page<Person> persons = personService.findAll(pageable);
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Page<Person> persons = personService.findAll(paging);
 
         return persons;
     }
