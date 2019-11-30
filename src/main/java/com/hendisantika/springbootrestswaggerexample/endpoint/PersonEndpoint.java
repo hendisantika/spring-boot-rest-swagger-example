@@ -8,7 +8,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
+import java.util.Optional;
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,18 +46,19 @@ public class PersonEndpoint extends BaseEndpoint {
             value = "Get all persons",
             notes = "Returns first N persons specified by the size parameter with page offset specified by page parameter.",
             response = Page.class)
-    public Page<Person> getAll(
-            @ApiParam("The size of the page to be returned") @RequestParam(required = false) Integer size,
-            @ApiParam("Zero-based page index") @RequestParam(required = false) Integer page) {
+    public Page<Person> getAll(Pageable pageable
+//            @ApiParam("The size of the page to be returned") @RequestParam(required = false) Integer size,
+//            @ApiParam("Zero-based page index") @RequestParam(required = false) Integer page
+    ) {
 
-        if (size == null) {
-            size = DEFAULT_PAGE_SIZE;
-        }
-        if (page == null) {
-            page = 0;
-        }
+//        if (size == null) {
+//            size = DEFAULT_PAGE_SIZE;
+//        }
+//        if (page == null) {
+//            page = 0;
+//        }
 
-        Pageable pageable = new PageRequest(page, size);
+//        Pageable pageable = new PageRequest(page, size, Sort.by("id"));
         Page<Person> persons = personService.findAll(pageable);
 
         return persons;
@@ -71,8 +72,8 @@ public class PersonEndpoint extends BaseEndpoint {
     @ApiResponses(value = {@ApiResponse(code = 404, message = "Person not found")})
     public ResponseEntity<Person> get(@ApiParam("Person id") @PathVariable("id") Long id) {
 
-        Person person = personService.findOne(id);
-        return (person == null ? ResponseEntity.status(HttpStatus.NOT_FOUND) : ResponseEntity.ok()).body(person);
+        Optional<Person> person = personService.findById(id);
+        return (!person.isPresent() ? ResponseEntity.status(HttpStatus.NOT_FOUND) : ResponseEntity.ok()).body(person.get());
     }
 
     @RequestMapping(path = "/v1/person", method = RequestMethod.PUT, consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})

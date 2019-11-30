@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,9 +34,9 @@ public class PersonService {
     }
 
     @Transactional(readOnly = true)
-    public Person findOne(Long id) {
+    public Optional<Person> findById(Long id) {
 
-        return repository.findOne(id);
+        return repository.findById(id);
     }
 
     public Person save(Person person) {
